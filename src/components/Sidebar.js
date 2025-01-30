@@ -1,14 +1,14 @@
-import { Home, Upload, User, LogOut } from "lucide-react";
+import {Home, LogOut, Upload, User} from "lucide-react";
 import Link from "next/link";
-import { useAuth } from "@clerk/nextjs";
+import {useAuth} from "@clerk/nextjs";
 
 const Sidebar = () => {
-    const { signOut } = useAuth();
+    const {signOut} = useAuth();
 
     const menuItems = [
-        { href: "/feed", icon: <Home />, label: "Feed" },
-        { href: "/profile", icon: <User />, label: "Profile" },
-        { href: "/upload", icon: <Upload />, label: "Upload" },
+        {href: "/feed", icon: <Home/>, label: "Feed"},
+        {href: "/profile", icon: <User/>, label: "Profile"},
+        {href: "/upload", icon: <Upload/>, label: "Upload"},
     ];
 
     return (
@@ -23,12 +23,13 @@ const Sidebar = () => {
                     {item.icon}
                 </Link>
             ))}
+            <div className="flex-grow"/>
             <button
                 onClick={() => signOut()}
                 className="p-2 hover:bg-gray-800 rounded-full mt-auto"
                 aria-label="Logout"
             >
-                <LogOut />
+                <LogOut/>
             </button>
         </aside>
     );

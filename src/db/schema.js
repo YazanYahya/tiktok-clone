@@ -5,6 +5,7 @@ export const userProfiles = pgTable("user_profiles", {
     username: text("username").notNull(),
     email: text("email").notNull().unique(),
     profilePic: text("profile_pic"),
+    interests: jsonb("interests").default([]),
     createdAt: timestamp("created_at").defaultNow(),
 });
 

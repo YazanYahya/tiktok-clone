@@ -18,3 +18,10 @@ export async function getUserProfileById(userId) {
 
     return profile || null;
 }
+
+export async function updateUserInterests(userId, interests) {
+    return db
+        .update(userProfiles)
+        .set({interests})
+        .where(eq(userProfiles.id, userId));
+}
