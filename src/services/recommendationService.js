@@ -19,11 +19,18 @@ export async function generateRecommendations(userId) {
     // Fetch video details
     let recommendedVideos = await fetchVideosByIds([...videoScores.keys()]);
 
-    // Attach scores & apply diversity control
-    recommendedVideos = recommendedVideos.map(video => ({
-        ...video,
-        score: videoScores.get(video.id) || 0,
-    }));
+    // Attach scores & determine the source of recommendation
+    recommendedVideos = recommendedVideos.map(video => {
+        const isBasedCollaborative = collaborativeVideos.some(v => v.video_id === video.id);
+        const isBasedContent = contentVideos.some(v => v.id === video.id);
+
+        return {
+            ...video,
+            score: videoScores.get(video.id) || 0,
+            isBasedCollaborative,
+            isBasedContent
+        };
+    });
 
     // Apply diversity control
     recommendedVideos = applyDiversityControl(recommendedVideos);
