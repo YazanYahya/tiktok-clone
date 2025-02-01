@@ -2,6 +2,7 @@
 
 import {auth, clerkClient} from '@clerk/nextjs/server'
 import {updateUserInterests} from "@/services/userService";
+import {embedText} from "@/utils/GeminiClient";
 
 export const completeOnboarding = async (selectedInterests) => {
     const client = await clerkClient()
@@ -18,7 +19,10 @@ export const completeOnboarding = async (selectedInterests) => {
             },
         });
 
-        await updateUserInterests(userId, selectedInterests);
+        const interestDescription = `User is interested in ${selectedInterests.join(", ")}.`;
+        const embeddings = await embedText(interestDescription);
+
+        await updateUserInterests(userId, selectedInterests, embeddings);
 
         return {message: 'User metadata Updated'}
     } catch (e) {

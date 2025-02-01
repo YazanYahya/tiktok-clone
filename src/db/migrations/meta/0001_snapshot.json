@@ -1,6 +1,6 @@
 {
-  "id": "4165831d-1cdf-4b79-a0ba-b42682790821",
-  "prevId": "aa40998e-057c-4e35-a12b-2aca008b682f",
+  "id": "f766b206-af3f-4823-a64b-7952740c36bc",
+  "prevId": "dd78b1b0-2712-4d49-95a9-f3ef413d529c",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -110,6 +110,20 @@
           "primaryKey": false,
           "notNull": false
         },
+        "interests": {
+          "name": "interests",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'[]'::jsonb"
+        },
+        "embeddings": {
+          "name": "embeddings",
+          "type": "vector(768)",
+          "primaryKey": false,
+          "notNull": false,
+          "default": null
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
@@ -130,58 +144,6 @@
           ]
         }
       },
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.video_features": {
-      "name": "video_features",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "video_id": {
-          "name": "video_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "embedding": {
-          "name": "embedding",
-          "type": "vector(1536)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "timestamp": {
-          "name": "timestamp",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "video_features_video_id_videos_id_fk": {
-          "name": "video_features_video_id_videos_id_fk",
-          "tableFrom": "video_features",
-          "tableTo": "videos",
-          "columnsFrom": [
-            "video_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -208,15 +170,30 @@
           "primaryKey": false,
           "notNull": false
         },
-        "tags": {
-          "name": "tags",
-          "type": "jsonb",
+        "summary": {
+          "name": "summary",
+          "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "default": null
         },
         "duration": {
           "name": "duration",
           "type": "double precision",
+          "primaryKey": false,
+          "notNull": false,
+          "default": null
+        },
+        "inferred_interests": {
+          "name": "inferred_interests",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'[]'::jsonb"
+        },
+        "embeddings": {
+          "name": "embeddings",
+          "type": "vector(768)",
           "primaryKey": false,
           "notNull": false,
           "default": null

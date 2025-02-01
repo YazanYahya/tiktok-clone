@@ -4,12 +4,12 @@ import {eq, inArray} from "drizzle-orm";
 import {uploadVideo} from "@/utils/S3Client";
 
 
-export async function uploadAndSaveVideo(fileBuffer, caption, tags, userId) {
+export async function uploadAndSaveVideo(fileBuffer, caption, userId) {
     // Upload the video to S3
     const fileUrl = await uploadVideo(fileBuffer);
 
     // Save video metadata in the database
-    const [insertedVideo] = await uploadVideoToDB(fileUrl, caption, tags, userId);
+    const [insertedVideo] = await uploadVideoToDB(fileUrl, caption, userId);
 
     return {
         fileUrl,
@@ -17,10 +17,10 @@ export async function uploadAndSaveVideo(fileBuffer, caption, tags, userId) {
     };
 }
 
-export async function uploadVideoToDB(url, caption, tags, userId) {
+export async function uploadVideoToDB(url, caption, userId) {
     return db
         .insert(videos)
-        .values({url, caption, tags, userId, createdAt: new Date()})
+        .values({url, caption, userId, createdAt: new Date()})
         .returning({id: videos.id});
 }
 
@@ -30,7 +30,6 @@ export async function fetchLatestVideos(limit = 10) {
             id: videos.id,
             url: videos.url,
             caption: videos.caption,
-            tags: videos.tags,
             likesCount: videos.likesCount,
             userId: videos.userId,
             createdAt: videos.createdAt,
@@ -79,11 +78,22 @@ export async function fetchVideosByIds(videoIds) {
             id: videos.id,
             url: videos.url,
             caption: videos.caption,
-            tags: videos.tags,
             likesCount: videos.likesCount,
             userId: videos.userId,
             createdAt: videos.createdAt,
         })
         .from(videos)
         .where(inArray(videos.id, videoIds));
+}
+
+export async function updateVideoMetadata(videoId, {summary, interests, embeddings}) {
+    await db
+        .update(videos)
+        .set({
+            summary,
+            embeddings,
+            inferredInterests: interests,
+            updatedAt: new Date(),
+        })
+        .where(eq(videos.id, videoId));
 }

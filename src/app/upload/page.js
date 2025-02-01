@@ -6,7 +6,6 @@ import Sidebar from "@/components/Sidebar";
 export default function UploadVideoPage() {
     const [file, setFile] = useState(null);
     const [caption, setCaption] = useState("");
-    const [tags, setTags] = useState("");
     const [isUploading, setIsUploading] = useState(false);
     const [message, setMessage] = useState("");
 
@@ -39,7 +38,6 @@ export default function UploadVideoPage() {
         const formData = new FormData();
         formData.append("file", file);
         formData.append("caption", caption.trim());
-        formData.append("tags", tags.trim());
 
         try {
             const response = await fetch("/api/videos/upload", {
@@ -53,7 +51,6 @@ export default function UploadVideoPage() {
                 // Clear the form after successful upload
                 setFile(null);
                 setCaption("");
-                setTags("");
             } else {
                 const error = await response.json();
                 setMessage(`Error: ${error.error || "Something went wrong."}`);
@@ -92,18 +89,6 @@ export default function UploadVideoPage() {
                                 value={caption}
                                 onChange={(e) => setCaption(e.target.value)}
                                 placeholder="Add a caption..."
-                                className="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2"
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Tags (comma-separated)
-                            </label>
-                            <input
-                                type="text"
-                                value={tags}
-                                onChange={(e) => setTags(e.target.value)}
-                                placeholder="e.g., fun, travel, vlog"
                                 className="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2"
                             />
                         </div>

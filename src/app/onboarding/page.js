@@ -6,21 +6,7 @@ import {Button} from "@/components/ui/button"
 import {motion} from "framer-motion"
 import {useUser} from "@clerk/nextjs";
 import {completeOnboarding} from "@/app/onboarding/actions";
-
-const interests = [
-    "Sports",
-    "Games",
-    "Music",
-    "Movies",
-    "Technology",
-    "Fashion",
-    "Food",
-    "Travel",
-    "Art",
-    "Fitness",
-    "Education",
-    "Comedy",
-]
+import {INTERESTS} from "@/constants/interests";
 
 export default function OnboardingPage() {
     const {user} = useUser()
@@ -52,7 +38,7 @@ export default function OnboardingPage() {
             </motion.div>
             <form onSubmit={handleSubmit} className="w-full max-w-3xl">
                 <div className="grid grid-cols-3 md:grid-cols-4 gap-4 mb-8">
-                    {interests.map((interest, index) => (
+                    {INTERESTS.map((interest, index) => (
                         <motion.div
                             key={interest}
                             initial={{opacity: 0, scale: 0.8}}

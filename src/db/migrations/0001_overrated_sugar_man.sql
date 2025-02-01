@@ -12,23 +12,20 @@ CREATE TABLE "user_profiles" (
 	"username" text NOT NULL,
 	"email" text NOT NULL,
 	"profile_pic" text,
+	"interests" jsonb DEFAULT '[]'::jsonb,
+	"embeddings" vector(768) DEFAULT null,
 	"created_at" timestamp DEFAULT now(),
 	CONSTRAINT "user_profiles_email_unique" UNIQUE("email")
-);
---> statement-breakpoint
-CREATE TABLE "video_features" (
-	"id" serial PRIMARY KEY NOT NULL,
-	"video_id" integer NOT NULL,
-	"embedding" vector(1536) NOT NULL,
-	"timestamp" timestamp DEFAULT now()
 );
 --> statement-breakpoint
 CREATE TABLE "videos" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"url" text NOT NULL,
 	"caption" text,
-	"tags" jsonb,
+	"summary" text DEFAULT null,
 	"duration" double precision DEFAULT null,
+	"inferred_interests" jsonb DEFAULT '[]'::jsonb,
+	"embeddings" vector(768) DEFAULT null,
 	"likes_count" integer DEFAULT 0,
 	"user_id" text NOT NULL,
 	"created_at" timestamp DEFAULT now()
@@ -36,5 +33,4 @@ CREATE TABLE "videos" (
 --> statement-breakpoint
 ALTER TABLE "user_interactions" ADD CONSTRAINT "user_interactions_user_id_user_profiles_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user_profiles"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "user_interactions" ADD CONSTRAINT "user_interactions_video_id_videos_id_fk" FOREIGN KEY ("video_id") REFERENCES "public"."videos"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "video_features" ADD CONSTRAINT "video_features_video_id_videos_id_fk" FOREIGN KEY ("video_id") REFERENCES "public"."videos"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "videos" ADD CONSTRAINT "videos_user_id_user_profiles_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user_profiles"("id") ON DELETE no action ON UPDATE no action;
