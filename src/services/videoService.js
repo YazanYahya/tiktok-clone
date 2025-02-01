@@ -1,7 +1,8 @@
 import {db} from "@/db/db";
 import {videos} from "@/db/schema";
-import {eq, inArray} from "drizzle-orm";
+import {and, cosineDistance, desc, eq, gt, inArray, isNotNull, sql} from "drizzle-orm";
 import {uploadVideo} from "@/utils/S3Client";
+import {fetchUserEmbedding} from "@/services/userService";
 
 
 export async function uploadAndSaveVideo(fileBuffer, caption, userId) {
@@ -80,6 +81,7 @@ export async function fetchVideosByIds(videoIds) {
             caption: videos.caption,
             likesCount: videos.likesCount,
             userId: videos.userId,
+            embeddings: videos.embeddings,
             createdAt: videos.createdAt,
         })
         .from(videos)
@@ -96,4 +98,25 @@ export async function updateVideoMetadata(videoId, {summary, interests, embeddin
             updatedAt: new Date(),
         })
         .where(eq(videos.id, videoId));
+}
+
+export async function fetchContentBasedRecommendedVideos(userId, similarityThreshold = 0.25, limit = 5) {
+    const userEmbedding = await fetchUserEmbedding(userId);
+    if (!userEmbedding) return [];
+
+    const similarityQuery = sql`1 - (
+    ${cosineDistance(videos.embeddings, userEmbedding)}
+    )`;
+
+    return db
+        .select({
+            id: videos.id,
+            url: videos.url,
+            caption: videos.caption,
+            similarity: similarityQuery,
+        })
+        .from(videos)
+        .where(and(gt(similarityQuery, similarityThreshold), isNotNull(videos.embeddings)))
+        .orderBy(desc(similarityQuery))
+        .limit(limit);
 }

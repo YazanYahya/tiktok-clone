@@ -1,7 +1,7 @@
 import {Redis} from '@upstash/redis';
 
 const redis = new Redis({
-    url: process.env.REDIS_HOST,
+    url: `https://${process.env.REDIS_HOST}`,
     token: process.env.REDIS_PASSWORD,
 });
 

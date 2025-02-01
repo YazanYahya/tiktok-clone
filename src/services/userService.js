@@ -28,3 +28,13 @@ export async function updateUserInterests(userId, interests, embeddings) {
         })
         .where(eq(userProfiles.id, userId));
 }
+
+export async function fetchUserEmbedding(userId) {
+    const user = await db
+        .select({ embeddings: userProfiles.embeddings })
+        .from(userProfiles)
+        .where(eq(userProfiles.id, userId))
+        .limit(1);
+
+    return user.length > 0 ? user[0].embeddings : null;
+}
