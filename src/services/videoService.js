@@ -81,7 +81,6 @@ export async function fetchVideosByIds(videoIds) {
             caption: videos.caption,
             likesCount: videos.likesCount,
             userId: videos.userId,
-            embeddings: videos.embeddings,
             createdAt: videos.createdAt,
         })
         .from(videos)
@@ -100,7 +99,7 @@ export async function updateVideoMetadata(videoId, {summary, interests, embeddin
         .where(eq(videos.id, videoId));
 }
 
-export async function fetchContentBasedRecommendedVideos(userId, similarityThreshold = 0.25, limit = 5) {
+export async function fetchContentBasedRecommendedVideos(userId, similarityThreshold = 0.25, limit = 10) {
     const userEmbedding = await fetchUserEmbedding(userId);
     if (!userEmbedding) return [];
 
